@@ -9,6 +9,10 @@ section > div.container {
     flex-direction: column;
 }
 
+img.card-img-top {
+    width: 100%;
+}
+
 .card-sub-body {
     display: flex;
     flex-direction: row;
