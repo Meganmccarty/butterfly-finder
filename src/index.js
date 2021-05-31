@@ -90,6 +90,28 @@ function createTaxon(taxon) {
     const squareImg = taxon.photos[0].url;
     const largeImg = squareImg.replace('square', 'large');
 
+    // Add event listener to More Info button
+    button.addEventListener('click', function showMoreInfo() {
+        const lightbox = document.getElementById('lightbox');
+        const closeButton = document.getElementById('close');
+        const lightboxContent = document.getElementById('lightbox-content');
+    
+        const lightboxImg = document.createElement('img');
+        const lightboxPara = document.createElement('p');
+        
+        lightbox.style.display = 'flex';
+        lightboxImg.src = largeImg;
+        lightboxPara.innerHTML = cardText.innerHTML;
+    
+        lightboxContent.appendChild(lightboxImg);
+        lightboxContent.appendChild(lightboxPara);
+
+        closeButton.addEventListener('click', function hideMoreInfo() {
+            lightboxContent.innerHTML = '';
+            lightbox.style.display = 'none';
+        })
+    });
+
     // Add img source to img element, append img and card body to card itself
     img.src = largeImg;
     card.appendChild(img);
@@ -99,5 +121,5 @@ function createTaxon(taxon) {
     cardBox.appendChild(card);
 
     // Append card box to container div
-    row.appendChild(cardBox);
+    return row.appendChild(cardBox);
 }
