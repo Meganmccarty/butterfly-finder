@@ -87,3 +87,9 @@ img.card-img-top {
     text-decoration: none;
     cursor: pointer;
 }
+
+@media screen and (max-width: 450px) {
+    #lightbox-content img {
+        max-height: 350px;
+    }
+}
