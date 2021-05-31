@@ -8,6 +8,7 @@ form.addEventListener('submit', submitForm);
 
 function submitForm(e) {
     e.preventDefault();
+    row.innerHTML = '';
     const stateSelected = stateDropdown.value;
     const taxonInputted = taxonSearch.value;
 
@@ -64,4 +65,5 @@ function submitForm(e) {
     .catch(error => {
         console.log(error)
     })
+    form.reset();
 }
