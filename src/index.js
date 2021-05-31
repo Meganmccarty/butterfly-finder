@@ -101,7 +101,7 @@ function createTaxon(taxon) {
         
         lightbox.style.display = 'flex';
         lightboxImg.src = largeImg;
-        lightboxPara.innerHTML = cardText.innerHTML;
+        lightboxPara.innerHTML = cardText.innerHTML + `<br> Observed by <a href="https://www.inaturalist.org/people/${taxon.user.login}">${taxon.user.login}</a>, who has observed ${taxon.user.observations_count} different organisms!`;
     
         lightboxContent.appendChild(lightboxImg);
         lightboxContent.appendChild(lightboxPara);
