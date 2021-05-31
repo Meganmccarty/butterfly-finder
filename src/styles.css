@@ -63,16 +63,16 @@ img.card-img-top {
 }
 
 #lightbox-content img {
-    max-height: 500px;
+    max-height: 450px;
     height: 100%;
     max-width: 100%;
     box-shadow: 5px 8px 15px black;
 }
 
 #lightbox-content p {
-    width: 50%;
+    width: 75%;
     color: white;
-    border: 2px solid green;
+    text-align: center;
 }
 
 .close {
