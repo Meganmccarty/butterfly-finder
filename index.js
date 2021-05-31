@@ -12,7 +12,7 @@ function submitForm(e) {
     const stateSelected = stateDropdown.value;
     const taxonInputted = taxonSearch.value;
 
-    fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=created_at&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
+    fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=observed_on&hrank=species&per_page=12&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
     .then(response => response.json())
     .then(data => {
         console.log(data);
@@ -44,7 +44,7 @@ function submitForm(e) {
                 cardSubBody.appendChild(button);
                 cardSubBody.appendChild(smallText);
 
-                cardText.innerText = taxon.taxon.name;
+                cardText.innerHTML = `${taxon.taxon.preferred_common_name} (<i>${taxon.taxon.name}</i>)<br>${taxon.place_guess}`;
                 cardBody.appendChild(cardText);
                 cardBody.appendChild(cardSubBody);
 
