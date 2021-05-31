@@ -98,12 +98,6 @@ footer div.footer {
     padding-bottom: 10px;
 }
 
-@media screen and (max-width: 550px) {
-    footer div.footer {
-        flex-direction: column;
-    }
-}
-
 @media screen and (max-width: 450px) {
     #lightbox-content img {
         max-height: 350px;
