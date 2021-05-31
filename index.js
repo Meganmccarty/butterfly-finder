@@ -25,12 +25,15 @@ function fetchAPI() {
         console.log(data);
         if (data.total_results === 0) {
             console.log("Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.");
+            const errorPara = document.createElement('p');
+            errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
+            row.appendChild(errorPara);
         } else {
             data.results.map(taxon => createTaxon(taxon))
         }
     })
     .catch(error => {
-        console.log(error)
+        console.log(error);
     })
 }
 
