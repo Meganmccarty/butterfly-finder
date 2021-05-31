@@ -53,6 +53,7 @@ function fetchAPI() {
 }
 
 function createTaxon(taxon) {
+    console.log(taxon);
     // Variables needed for new HTML elements
     const cardBox = document.createElement('div');
     const card = document.createElement('section');
@@ -101,7 +102,17 @@ function createTaxon(taxon) {
         
         lightbox.style.display = 'flex';
         lightboxImg.src = largeImg;
-        lightboxPara.innerHTML = cardText.innerHTML + `<br> Observed by <a href="https://www.inaturalist.org/people/${taxon.user.login}">${taxon.user.login}</a>, who has observed ${taxon.user.observations_count} different organisms!`;
+        lightboxPara.innerHTML = cardText.innerHTML + `
+            <br> Photo and observation © 
+            <a target="_blank" href="https://www.inaturalist.org/people/${taxon.user.login}">${taxon.user.login}</a>, 
+            who has observed ${taxon.user.observations_count} different organisms!
+        `;
+        if (taxon.taxon.wikipedia_url) {
+            lightboxPara.innerHTML += `
+                <br>
+                <a target="_blank" href=${taxon.taxon.wikipedia_url}><button class="btn btn-primary">Wikipedia</button></a>
+            `
+        }
     
         lightboxContent.appendChild(lightboxImg);
         lightboxContent.appendChild(lightboxPara);
