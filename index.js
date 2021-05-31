@@ -3,6 +3,7 @@ const form = document.getElementById('form');
 const stateDropdown = document.getElementById('state-dropdown');
 const taxonSearch = document.getElementById('taxon-search');
 const row = document.querySelector('div.row');
+const containerDiv = row.parentElement;
 
 form.addEventListener('submit', submitForm);
 
@@ -10,9 +11,21 @@ function submitForm(e) {
     e.preventDefault();
     row.innerHTML = '';
 
+    insertLoadingGIF();
     fetchAPI();
 
     form.reset();
+}
+
+function insertLoadingGIF() {
+    const loadingGIF = document.createElement('img');
+    loadingGIF.src = './src/images/loading.gif';
+    loadingGIF.id = 'loading-gif';
+    return containerDiv.appendChild(loadingGIF);
+}
+
+function removeLoadingGIF() {
+    return containerDiv.lastChild.remove();
 }
 
 function fetchAPI() {
@@ -22,7 +35,9 @@ function fetchAPI() {
     return fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=observed_on&hrank=species&per_page=12&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
     .then(response => response.json())
     .then(data => {
-        console.log(data);
+        
+        removeLoadingGIF();
+
         if (data.total_results === 0) {
             console.log("Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.");
             const errorPara = document.createElement('p');
