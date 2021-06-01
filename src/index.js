@@ -1,15 +1,9 @@
-// Variables for current HTML elements
 const form = document.getElementById('form');
-const stateDropdown = document.getElementById('state-dropdown');
-const taxonSearch = document.getElementById('taxon-search');
-const row = document.querySelector('div.row');
-const containerDiv = row.parentElement;
-
 form.addEventListener('submit', submitForm);
 
 function submitForm(e) {
     e.preventDefault();
-    row.innerHTML = '';
+    document.querySelector('div.row').innerHTML = '';
 
     insertLoadingGIF();
     fetchAPI();
@@ -21,16 +15,16 @@ function insertLoadingGIF() {
     const loadingGIF = document.createElement('img');
     loadingGIF.src = './src/images/loading.gif';
     loadingGIF.id = 'loading-gif';
-    return containerDiv.appendChild(loadingGIF);
+    return document.querySelector('div.row').parentElement.appendChild(loadingGIF);
 }
 
 function removeLoadingGIF() {
-    return containerDiv.lastChild.remove();
+    return document.querySelector('div.row').parentElement.lastChild.remove();
 }
 
 function fetchAPI() {
-    const stateSelected = stateDropdown.value;
-    const taxonInputted = taxonSearch.value;
+    const stateSelected = document.getElementById('state-dropdown').value;
+    const taxonInputted = document.getElementById('taxon-search').value;
 
     return fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=observed_on&hrank=species&per_page=12&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
     .then(response => response.json())
@@ -41,7 +35,7 @@ function fetchAPI() {
         if (data.total_results === 0) {
             const errorPara = document.createElement('p');
             errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
-            row.appendChild(errorPara);
+            document.querySelector('div.row').appendChild(errorPara);
         } else {
             data.results.map(taxon => createTaxon(taxon))
         }
@@ -145,7 +139,7 @@ function createTaxon(taxon) {
     cardBox.appendChild(card);
 
     // Append card box to container div
-    return row.appendChild(cardBox);
+    return document.querySelector('div.row').appendChild(cardBox);
 }
 
 // This function is specifically written to prevent a deprecation warning from occurring when using moment.js
