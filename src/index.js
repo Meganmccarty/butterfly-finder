@@ -39,7 +39,6 @@ function fetchAPI() {
         removeLoadingGIF();
 
         if (data.total_results === 0) {
-            console.log("Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.");
             const errorPara = document.createElement('p');
             errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
             row.appendChild(errorPara);
@@ -76,7 +75,21 @@ function createTaxon(taxon) {
     smallText.className = 'text-muted';
 
     // Add observation date, append button and date to sub-body
-    smallText.innerText = taxon.observed_on;
+    const date = taxon.observed_on;
+    const stringDate = taxon.observed_on_string.split(' ');
+    let correctDateFormat = '';
+    
+    if (convertTimeFormat(stringDate)) {
+        correctDateFormat = `${date} ` + convertTimeFormat(stringDate);
+    } else {
+        correctDateFormat = date;
+    }
+    
+    console.log(stringDate);
+    console.log(convertTimeFormat(stringDate));
+    console.log(correctDateFormat);
+
+    smallText.innerText = moment(correctDateFormat).fromNow();
     cardSubBody.appendChild(button);
     cardSubBody.appendChild(smallText);
 
@@ -133,4 +146,36 @@ function createTaxon(taxon) {
 
     // Append card box to container div
     return row.appendChild(cardBox);
+}
+
+// This function is specifically written to prevent a deprecation warning from occurring when using moment.js
+// Because iNaturalist is loose about the date formats it uses (it uses many!), the date must be converted to a
+// format accepted by moment.js before being passed into moment.js as an argument
+
+function convertTimeFormat(stringDate) {
+    let time = '';
+    
+    if (stringDate.length >= 7) {
+        time = stringDate[4]
+    } else if (stringDate.length >= 3) {
+        time = stringDate[1];
+        const pmOrAm = stringDate[2];
+        const firstTimeElement = parseInt(time[0]);
+        const secondTimeElement = parseInt(time[1]);
+
+        if (pmOrAm === 'PM' && firstTimeElement !== 1 && secondTimeElement !== 2) {
+            time = firstTimeElement + 12 + time.substring(1);
+        } else if (pmOrAm === 'AM' && firstTimeElement === 1 && secondTimeElement === 2) {
+            firstTimeElement = 0;
+            secondTimeElement = 0;
+            time = firstTimeElement + secondTimeElement + time.substring(1);   
+        }
+        
+    } else if (stringDate.length > 1) {
+        time = stringDate[1];
+    } else {
+        time = '';
+    }
+
+    return time;
 }
