@@ -47,6 +47,7 @@ function removeLoadingGIF() {
 }
 
 function createTaxon(taxon) {
+    console.log(taxon);
     const cardBox = document.createElement('div');
     const card = document.createElement('section');
     const img = document.createElement('img');
@@ -67,8 +68,10 @@ function createTaxon(taxon) {
     smallText.className = 'text-muted';
 
     const date = taxon.observed_on;
-    const stringDate = taxon.observed_on_string.split(' ');
-    smallText.innerText = moment(convertTimeFormat(date, stringDate)).fromNow();
+    /* (See note below about time format issues) */
+    //const stringDate = taxon.observed_on_string.split(' ');
+    //smallText.innerText = moment(convertTimeFormat(date, stringDate)).fromNow();
+    smallText.innerText = date;
     cardSubBody.append(button, smallText);
 
     button.addEventListener('click', (e) => showMoreInfo(e, taxon))
@@ -117,6 +120,11 @@ function hideMoreInfo() {
     lightbox.style.display = 'none';
 }
 
+// Sadly, while my code below (mostly) worked, I came across even more inconsistent date formats that would become
+// too complicated to fix. Not to mention I forgot to factor in timezones. :(
+
+/*
+
 // This function is specifically written to prevent a deprecation warning from occurring when using moment.js
 // Because iNaturalist is loose about the date formats it uses (it uses many!), the date must be converted to a
 // format accepted by moment.js before being passed into moment.js as an argument
@@ -163,3 +171,4 @@ function convertTimeFormat(date, stringDate) {
         return date;
     }
 }
+*/
