@@ -22,7 +22,7 @@ function fetchAPI() {
     const stateSelected = document.getElementById('state-dropdown').value;
     const taxonInputted = document.getElementById('taxon-search').value;
 
-    return fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=observed_on&hrank=species&per_page=12&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
+    return fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=observed_on&hrank=species&page=1&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
     .then(response => response.json())
     .then(data => displayResults(data))
     .catch(error => {
@@ -36,9 +36,10 @@ function displayResults(data) {
     if (data.total_results === 0) {
         const errorPara = document.createElement('p');
         errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
-        document.querySelector('div.row').appendChild(errorPara);
+        return document.querySelector('div.row').appendChild(errorPara);
     } else {
-        data.results.map(taxon => createTaxon(taxon))
+        console.log(data);
+        return data.results.map(taxon => createTaxon(taxon))
     }
 }
 
@@ -68,10 +69,7 @@ function createTaxon(taxon) {
     smallText.className = 'text-muted';
 
     const date = taxon.observed_on;
-    /* (See note below about time format issues) */
-    //const stringDate = taxon.observed_on_string.split(' ');
-    //smallText.innerText = moment(convertTimeFormat(date, stringDate)).fromNow();
-    smallText.innerText = date;
+    smallText.innerText = moment(taxon.time_observed_at).fromNow();
     cardSubBody.append(button, smallText);
 
     button.addEventListener('click', (e) => showMoreInfo(e, taxon))
@@ -111,8 +109,8 @@ function showMoreInfo(e, taxon) {
         `
     }
 
-    document.getElementById('lightbox-content').append(lightboxImg, lightboxPara);
     document.getElementById('close').addEventListener('click', hideMoreInfo);
+    return document.getElementById('lightbox-content').append(lightboxImg, lightboxPara);
 }
 
 function hideMoreInfo() {
@@ -120,8 +118,10 @@ function hideMoreInfo() {
     lightbox.style.display = 'none';
 }
 
-// Sadly, while my code below (mostly) worked, I came across even more inconsistent date formats that would become
-// too complicated to fix. Not to mention I forgot to factor in timezones. :(
+// Found a much better way to get the correct date format needed for moment.js (rendering the code below unnecessary)
+// The observation object returned has another key with a standard date format that also takes timezones into account
+// Keeping my code below (but commented out) because I spent a lot of time on it (and it worked most of the time;
+// there were still some extra date/time formats that I did not take into account, as they were rarely used)
 
 /*
 
