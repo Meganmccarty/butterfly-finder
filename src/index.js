@@ -27,7 +27,7 @@ function submitForm(e) {
 function fetchAPI() {
     insertLoadingGIF();
 
-    return fetch(`https://api.inaturalist.org/v1/observations?photos=true&order=desc&order_by=observed_on&hrank=species&page=${pageNumber}&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonSearched}`)
+    return fetch(`https://api.inaturalist.org/v1/observations?photos=true&verifiable=true&geoprivacy=open&order=desc&order_by=observed_on&hrank=species&page=${pageNumber}&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonSearched}`)
     .then(response => response.json())
     .then(data => displayResults(data))
     .catch(error => {
@@ -130,7 +130,7 @@ function createTaxon(taxon) {
 
     button.addEventListener('click', (e) => showMoreInfo(e, taxon))
 
-    cardText.innerHTML = `${taxon.taxon.preferred_common_name} (<i>${taxon.taxon.name}</i>)<br>${taxon.place_guess}`;
+    cardText.innerHTML = `${taxon.taxon.preferred_common_name} (<i>${taxon.taxon.name}</i>)`;
     cardBody.append(cardText, cardSubBody);
 
     img.src = convertImage(taxon);
@@ -155,6 +155,7 @@ function showMoreInfo(e, taxon) {
     document.getElementById('lightbox').style.display = 'flex';
     lightboxImg.src = convertImage(taxon);
     lightboxPara.innerHTML = e.target.parentElement.previousSibling.innerHTML + `
+        <br> <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${taxon.location}">${taxon.place_guess}</a>
         <br> Photo and observation © 
         <a target="_blank" href="https://www.inaturalist.org/people/${taxon.user.login}">${taxon.user.login}</a>, 
         who has observed ${taxon.user.observations_count} different organisms!
