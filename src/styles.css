@@ -16,6 +16,14 @@ section > div.container {
     justify-content: center;;
 }
 
+div.container.column {
+    flex-direction: column;
+}
+
+#page-buttons button {
+    margin: 5px;
+}
+
 #loading-gif {
     width: 100px;
 }
