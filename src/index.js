@@ -1,3 +1,4 @@
+// Variables for form, form input values, and current page number
 const form = document.getElementById('form');
 let stateSelected = '';
 let taxonSearched = '';
@@ -5,8 +6,10 @@ let pageNumber = 1;
 
 form.addEventListener('submit', submitForm);
 
+// Form function clears page, grabs input values, invokes fetch, and then resets
 function submitForm(e) {
     e.preventDefault();
+
     document.querySelector('div.row').innerHTML = '';
     document.getElementById('page-buttons').innerHTML = '';
     stateSelected = document.getElementById('state-dropdown').value;
@@ -20,11 +23,11 @@ function submitForm(e) {
     return stateSelected, taxonSearched;
 }
 
+// Fetch function invokes loading GIF, fetches data, and passes it to displayResults function
 function fetchAPI() {
     insertLoadingGIF();
-    let fetchURL = `https://api.inaturalist.org/v1/observations?photos=true&order=desc&order_by=observed_on&hrank=species&page=${pageNumber}&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonSearched}`;
-    console.log("Fetch URL: " + fetchURL);
-    return fetch(fetchURL)
+
+    return fetch(`https://api.inaturalist.org/v1/observations?photos=true&order=desc&order_by=observed_on&hrank=species&page=${pageNumber}&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonSearched}`)
     .then(response => response.json())
     .then(data => displayResults(data))
     .catch(error => {
@@ -32,23 +35,22 @@ function fetchAPI() {
     })
 }
 
-function insertLoadingGIF() {
-    const loadingGIF = document.createElement('img');
-    loadingGIF.src = './src/images/loading.gif';
-    loadingGIF.id = 'loading-gif';
-    return document.querySelector('div.row').parentElement.appendChild(loadingGIF);
-}
-
+/*
+    displayResults invokes removal of loading GIF, displays error if no results, creates page buttons depending on 
+    number of results and the current page number, and passes data to createTaxon function
+*/
 function displayResults(data) {
     removeLoadingGIF();
 
+    // First if statement: check total results fetched, render correct results
     if (data.total_results === 0) {
         const errorPara = document.createElement('p');
         errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
         return document.querySelector('div.row').appendChild(errorPara);
     } else if (data.total_results >= 15) {
+
+        // Second if statement: check current page number, render correct page buttons
         if (pageNumber >= 2) {
-            console.log(`I am on Page Number ${pageNumber}`)
             const previousButton = document.createElement('button');
             previousButton.innerText = 'Previous';
             previousButton.classList.add('btn', 'btn-primary');
@@ -61,26 +63,32 @@ function displayResults(data) {
 
             document.getElementById('page-buttons').append(previousButton, nextButton);
         } else if (pageNumber === 1) {
-
-            console.log("I am on Page Number 1")
             const nextButton = document.createElement('button');
             nextButton.innerText = 'Next'
             nextButton.classList.add('btn', 'btn-primary');
             nextButton.addEventListener('click', goForward);
-            document.getElementById('page-buttons').append(nextButton);
 
+            document.getElementById('page-buttons').append(nextButton);
         }
         return data.results.map(taxon => createTaxon(taxon));
     } else {
-        console.log(data);
         return data.results.map(taxon => createTaxon(taxon));
     }
+}
+
+// Functions for inserting and removing loading GIF
+function insertLoadingGIF() {
+    const loadingGIF = document.createElement('img');
+    loadingGIF.src = './src/images/loading.gif';
+    loadingGIF.id = 'loading-gif';
+    return document.querySelector('div.row').parentElement.appendChild(loadingGIF);
 }
 
 function removeLoadingGIF() {
     return document.querySelector('div.row').parentElement.lastChild.remove();
 }
 
+// Functions for viewing next/previous page
 function goForward() {
     pageNumber++;
     document.querySelector('div.row').innerHTML = '';
@@ -95,8 +103,9 @@ function goBackward() {
     return fetchAPI();
 }
 
+// Function for creating taxon
 function createTaxon(taxon) {
-    console.log(taxon);
+    //console.log(taxon);
     const cardBox = document.createElement('div');
     const card = document.createElement('section');
     const img = document.createElement('img');
@@ -116,7 +125,6 @@ function createTaxon(taxon) {
     button.innerText = 'More Info';
     smallText.className = 'text-muted';
 
-    const date = taxon.observed_on;
     smallText.innerText = moment(taxon.time_observed_at).fromNow();
     cardSubBody.append(button, smallText);
 
@@ -131,7 +139,7 @@ function createTaxon(taxon) {
     return document.querySelector('div.row').appendChild(cardBox);
 }
 
-// Convert square img returned from fetch request to larger size
+// Convert square img returned from fetched data to larger size
 // Info about replace()
 // https://www.freecodecamp.org/news/javascript-regex-match-example-how-to-use-the-js-replace-method-on-a-string/
 function convertImage(taxon) {
@@ -139,6 +147,7 @@ function convertImage(taxon) {
     return squareImg.replace('square', 'large');
 }
 
+// Functions for revealing/hiding lightbox
 function showMoreInfo(e, taxon) {
     const lightboxImg = document.createElement('img');
     const lightboxPara = document.createElement('p');
