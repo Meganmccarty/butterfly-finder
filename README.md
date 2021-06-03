@@ -10,8 +10,8 @@ To create your own copy of this project:
 1. Fork this repo
 2. Click the green 'Code' button at the top right and copy the link
 3. In your terminal, navigate to the directory in which to clone the repo
-4. Type `git clone <copied-link>`
-5. Type `cd butterfly-finder`
+4. Type `git clone <copied-link>` and hit enter
+5. Type `cd butterfly-finder` and hit enter
 6. Run `open index.html` (if on Windows, navigate to the index.html in your File Explorer and open the file in your browser)
 
 ## Features
@@ -24,6 +24,6 @@ To create your own copy of this project:
 
 ## Resources Used
 * Built with simple HTML, CSS, and vanilla JavaScript
-* [Bootstrap 4](https://getbootstrap.com/) example [Album theme](https://getbootstrap.com/docs/4.0/examples/album/) as a base for the website
-* [Moment.js](https://momentjs.com/) for displaying observation dates as relative dates
+* Used [Bootstrap 4](https://getbootstrap.com/) example [Album theme](https://getbootstrap.com/docs/4.0/examples/album/) as a base for the website
+* Used [Moment.js](https://momentjs.com/) for displaying observation dates as relative dates
 
