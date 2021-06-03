@@ -1,14 +1,35 @@
 const form = document.getElementById('form');
+let stateSelected = '';
+let taxonSearched = '';
+let pageNumber = 1;
+
 form.addEventListener('submit', submitForm);
 
 function submitForm(e) {
     e.preventDefault();
     document.querySelector('div.row').innerHTML = '';
+    document.getElementById('page-buttons').innerHTML = '';
+    stateSelected = document.getElementById('state-dropdown').value;
+    taxonSearched = document.getElementById('taxon-search').value;
+    pageNumber = 1;
 
-    insertLoadingGIF();
     fetchAPI();
 
     form.reset();
+
+    return stateSelected, taxonSearched;
+}
+
+function fetchAPI() {
+    insertLoadingGIF();
+    let fetchURL = `https://api.inaturalist.org/v1/observations?photos=true&order=desc&order_by=observed_on&hrank=species&page=${pageNumber}&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonSearched}`;
+    console.log("Fetch URL: " + fetchURL);
+    return fetch(fetchURL)
+    .then(response => response.json())
+    .then(data => displayResults(data))
+    .catch(error => {
+        console.log(error);
+    })
 }
 
 function insertLoadingGIF() {
@@ -18,18 +39,6 @@ function insertLoadingGIF() {
     return document.querySelector('div.row').parentElement.appendChild(loadingGIF);
 }
 
-function fetchAPI() {
-    const stateSelected = document.getElementById('state-dropdown').value;
-    const taxonInputted = document.getElementById('taxon-search').value;
-
-    return fetch(`https://api.inaturalist.org/v1/observations?order=desc&order_by=observed_on&hrank=species&page=1&per_page=15&place_id=${stateSelected}&taxon_id=47224&taxon_name=${taxonInputted}`)
-    .then(response => response.json())
-    .then(data => displayResults(data))
-    .catch(error => {
-        console.log(error);
-    })
-}
-
 function displayResults(data) {
     removeLoadingGIF();
 
@@ -37,14 +46,53 @@ function displayResults(data) {
         const errorPara = document.createElement('p');
         errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
         return document.querySelector('div.row').appendChild(errorPara);
+    } else if (data.total_results >= 15) {
+        if (pageNumber >= 2) {
+            console.log(`I am on Page Number ${pageNumber}`)
+            const previousButton = document.createElement('button');
+            previousButton.innerText = 'Previous';
+            previousButton.classList.add('btn', 'btn-primary');
+            previousButton.addEventListener('click', goBackward);
+
+            const nextButton = document.createElement('button');
+            nextButton.innerText = 'Next'
+            nextButton.classList.add('btn', 'btn-primary');
+            nextButton.addEventListener('click', goForward);
+
+            document.getElementById('page-buttons').append(previousButton, nextButton);
+        } else if (pageNumber === 1) {
+
+            console.log("I am on Page Number 1")
+            const nextButton = document.createElement('button');
+            nextButton.innerText = 'Next'
+            nextButton.classList.add('btn', 'btn-primary');
+            nextButton.addEventListener('click', goForward);
+            document.getElementById('page-buttons').append(nextButton);
+
+        }
+        return data.results.map(taxon => createTaxon(taxon));
     } else {
         console.log(data);
-        return data.results.map(taxon => createTaxon(taxon))
+        return data.results.map(taxon => createTaxon(taxon));
     }
 }
 
 function removeLoadingGIF() {
     return document.querySelector('div.row').parentElement.lastChild.remove();
+}
+
+function goForward() {
+    pageNumber++;
+    document.querySelector('div.row').innerHTML = '';
+    document.getElementById('page-buttons').innerHTML = '';
+    return fetchAPI();
+}
+
+function goBackward() {
+    pageNumber--;
+    document.querySelector('div.row').innerHTML = '';
+    document.getElementById('page-buttons').innerHTML = '';
+    return fetchAPI();
 }
 
 function createTaxon(taxon) {
