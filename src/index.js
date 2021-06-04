@@ -163,7 +163,17 @@ function showMoreInfo(e, taxon) {
     if (taxon.taxon.wikipedia_url) {
         lightboxPara.innerHTML += `
             <br>
+            <div>
+            <a target="_blank" href="${taxon.uri}"><button class="btn green">iNaturalist</button></a>
             <a target="_blank" href=${taxon.taxon.wikipedia_url}><button class="btn btn-primary">Wikipedia</button></a>
+            </div>
+        `
+    } else {
+        lightboxPara.innerHTML += `
+            <br>
+            <div>
+            <a target="_blank" href="${taxon.uri}"><button class="btn green">iNaturalist</button></a>
+            </div>
         `
     }
 
