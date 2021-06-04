@@ -19,7 +19,7 @@ To create your own copy of this project:
 * Optionally search for a butterfly species (e.g., "Monarch butterfly") or a general type of butterfly (e.g., "Swallowtail")
     * The optional search is case insensitive and can also take in scientific/latin names (but only to the genus level or below)
 * Display a lightbox for an individual image
-    * Lightbox also shows more info about the observation: place with link to Google maps, observer's name and link to iNaturalist page, and a link to Wikipedia about the particular species
+    * Lightbox also shows more info about the observation: place with link to Google maps, observer's name and link to iNaturalist page, a button linked to the observation's iNaturalist page, and a button linked to the species' Wikipedia page
 * Pagination buttons to show more results for a particular search
 
 ## Resources Used
