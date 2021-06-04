@@ -5,6 +5,8 @@ This is a simple website that utilizes the [iNaturalist API](https://api.inatura
 
 You can visit the live Butterfly Finder here: https://meganmccarty.github.io/butterfly-finder
 
+You can also [watch a short walkthrough](https://drive.google.com/file/d/1xY59IH-LSEMj68_VXfD3KIOpm1jma12s/view?usp=sharing) of the project
+
 ## Get your own copy
 To create your own copy of this project:
 1. Fork this repo
