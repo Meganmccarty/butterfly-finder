@@ -1,5 +1,9 @@
-// Variables for form, form input values, and current page number
+// Const variables for form, results, and page buttons
 const form = document.getElementById('form');
+const resultsContainer = document.querySelector('div.row');
+const pageButtons = document.getElementById('page-buttons');
+
+// Variables for input values and page number
 let stateSelected = '';
 let taxonSearched = '';
 let pageNumber = 1;
@@ -10,14 +14,13 @@ form.addEventListener('submit', submitForm);
 function submitForm(e) {
     e.preventDefault();
 
-    document.querySelector('div.row').innerHTML = '';
-    document.getElementById('page-buttons').innerHTML = '';
+    resultsContainer.innerHTML = '';
+    pageButtons.innerHTML = '';
     stateSelected = document.getElementById('state-dropdown').value;
     taxonSearched = document.getElementById('taxon-search').value;
     pageNumber = 1;
 
     fetchAPI();
-
     form.reset();
 
     return stateSelected, taxonSearched;
@@ -35,41 +38,16 @@ function fetchAPI() {
     })
 }
 
-/*
-    displayResults invokes removal of loading GIF, displays error if no results, creates page buttons depending on 
-    number of results and the current page number, and passes data to createTaxon function
-*/
+// Display function removes GIF, displays results, invokes page button function, and passes data to createTaxon()
 function displayResults(data) {
     removeLoadingGIF();
 
-    // First if statement: check total results fetched, render correct results
     if (data.total_results === 0) {
         const errorPara = document.createElement('p');
         errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
-        return document.querySelector('div.row').appendChild(errorPara);
+        return resultsContainer.appendChild(errorPara);
     } else if (data.total_results >= 15) {
-
-        // Second if statement: check current page number, render correct page buttons
-        if (pageNumber >= 2) {
-            const previousButton = document.createElement('button');
-            previousButton.innerText = 'Previous';
-            previousButton.classList.add('btn', 'btn-primary');
-            previousButton.addEventListener('click', goBackward);
-
-            const nextButton = document.createElement('button');
-            nextButton.innerText = 'Next'
-            nextButton.classList.add('btn', 'btn-primary');
-            nextButton.addEventListener('click', goForward);
-
-            document.getElementById('page-buttons').append(previousButton, nextButton);
-        } else if (pageNumber === 1) {
-            const nextButton = document.createElement('button');
-            nextButton.innerText = 'Next'
-            nextButton.classList.add('btn', 'btn-primary');
-            nextButton.addEventListener('click', goForward);
-
-            document.getElementById('page-buttons').append(nextButton);
-        }
+        renderPageButtons(pageNumber);
         return data.results.map(taxon => createTaxon(taxon));
     } else {
         return data.results.map(taxon => createTaxon(taxon));
@@ -81,25 +59,50 @@ function insertLoadingGIF() {
     const loadingGIF = document.createElement('img');
     loadingGIF.src = './src/images/loading.gif';
     loadingGIF.id = 'loading-gif';
-    return document.querySelector('div.row').parentElement.appendChild(loadingGIF);
+    return resultsContainer.parentElement.appendChild(loadingGIF);
 }
 
 function removeLoadingGIF() {
-    return document.querySelector('div.row').parentElement.lastChild.remove();
+    return resultsContainer.parentElement.lastChild.remove();
+}
+
+// Function for rendering correct page button(s) depending on current page number
+function renderPageButtons(pageNumber) {
+    if (pageNumber >= 2) {
+        const previousButton = document.createElement('button');
+        previousButton.innerText = 'Previous';
+        previousButton.classList.add('btn', 'btn-primary');
+        previousButton.addEventListener('click', goBackward);
+
+        const nextButton = document.createElement('button');
+        nextButton.innerText = 'Next'
+        nextButton.classList.add('btn', 'btn-primary');
+        nextButton.addEventListener('click', goForward);
+
+        return pageButtons.append(previousButton, nextButton);
+
+    } else if (pageNumber === 1) {
+        const nextButton = document.createElement('button');
+        nextButton.innerText = 'Next'
+        nextButton.classList.add('btn', 'btn-primary');
+        nextButton.addEventListener('click', goForward);
+
+        return pageButtons.append(nextButton);
+    }
 }
 
 // Functions for viewing next/previous page
 function goForward() {
     pageNumber++;
-    document.querySelector('div.row').innerHTML = '';
-    document.getElementById('page-buttons').innerHTML = '';
+    resultsContainer.innerHTML = '';
+    pageButtons.innerHTML = '';
     return fetchAPI();
 }
 
 function goBackward() {
     pageNumber--;
-    document.querySelector('div.row').innerHTML = '';
-    document.getElementById('page-buttons').innerHTML = '';
+    resultsContainer.innerHTML = '';
+    pageButtons.innerHTML = '';
     return fetchAPI();
 }
 
@@ -136,7 +139,7 @@ function createTaxon(taxon) {
     img.src = convertImage(taxon);
     card.append(img, cardBody);
     cardBox.appendChild(card);
-    return document.querySelector('div.row').appendChild(cardBox);
+    return resultsContainer.appendChild(cardBox);
 }
 
 // Convert square img returned from fetched data to larger size
