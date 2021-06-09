@@ -18,7 +18,6 @@ function submitForm(e) {
     pageButtons.innerHTML = '';
     stateSelected = document.getElementById('state-dropdown').value;
     taxonSearched = document.getElementById('taxon-search').value;
-    pageNumber = 1;
 
     fetchAPI();
     form.reset();
@@ -46,7 +45,7 @@ function displayResults(data) {
         const errorPara = document.createElement('p');
         errorPara.innerText = "Oops! The search term you entered did not turn up any butterflies. Please try searching for another butterfly.";
         return resultsContainer.appendChild(errorPara);
-    } else if (data.total_results >= 15) {
+    } else if (data.total_results > 15) {
         renderPageButtons(pageNumber);
         return data.results.map(taxon => createTaxon(taxon));
     } else {
