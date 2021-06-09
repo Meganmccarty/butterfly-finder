@@ -18,6 +18,7 @@ function submitForm(e) {
     pageButtons.innerHTML = '';
     stateSelected = document.getElementById('state-dropdown').value;
     taxonSearched = document.getElementById('taxon-search').value;
+    pageNumber = 1;
 
     fetchAPI();
     form.reset();
